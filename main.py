@@ -31,7 +31,8 @@ def stat_quest(key, *ar):
     good = '✅'
     bad = '❌'
 
-    st = [betho, perpet, granar, syna, rubico, velo, uni, pik, pool, poly] = [bad] * 10
+    st = [betho, perpet, granar, syna, rubico,
+          velo, uni, pik, pool, poly] = [bad] * 10
     for v, arg in enumerate(range(len(st))):
         if ar[v]:
             st[v] = good
@@ -78,7 +79,7 @@ async def i_dont_know_what_to_call_it_plus_rule(key, FN, USLO, NAME: str, TASK_I
     verif = await gal.verify_task(TASK_ID, ADDRESS)
 
     if int(TASK_ID) == 195285392787415040 and USLO:
-        verif =False
+        verif = False
 
     if verif or not USLO:
         logger.info(f'{NAME} | START | {ADDRESS}')
@@ -95,14 +96,14 @@ async def i_dont_know_what_to_call_it_plus_rule(key, FN, USLO, NAME: str, TASK_I
 
 async def beth(key):
     ADDRESS = web3.eth.account.from_key(key).address
-    bal_beth=0
-    if await balance_token(ADDRESS,'0x38f79beffc211c6c439b0a3d10a0a673ee63afb4') or await balance_token(ADDRESS,'0x4fd63966879300cafafbb35d157dc5229278ed23'):
+    bal_beth = 0
+    if await balance_token(ADDRESS, '0x38f79beffc211c6c439b0a3d10a0a673ee63afb4') or await balance_token(ADDRESS, '0x4fd63966879300cafafbb35d157dc5229278ed23'):
         bal_beth = 1
-    if bal_beth >0:
+    if bal_beth > 0:
         bal_beth = False
     else:
         bal_beth = True
-    stat = await i_dont_know_what_to_call_it_plus_rule(key, work_beth,bal_beth, 'BEETHOVEN', '193977443855015936')
+    stat = await i_dont_know_what_to_call_it_plus_rule(key, work_beth, bal_beth, 'BEETHOVEN', '193977443855015936')
     return stat
 
 
@@ -113,8 +114,8 @@ async def perp(key):
 
 async def granary(key):
     ADDRESS = web3.eth.account.from_key(key).address
-    USLO = await balance_token(ADDRESS,'0x7a0fddba78ff45d353b1630b77f4d175a00df0c0') == 0
-    stat = await i_dont_know_what_to_call_it_plus_rule(key, work_granary,USLO, 'GRANARY', '193030300969377792')
+    USLO = await balance_token(ADDRESS, '0x7a0fddba78ff45d353b1630b77f4d175a00df0c0') == 0
+    stat = await i_dont_know_what_to_call_it_plus_rule(key, work_granary, USLO, 'GRANARY', '193030300969377792')
     return stat
 
 
@@ -130,8 +131,8 @@ async def rubicon(key):
 
 async def velodrome(key):
     ADDRESS = web3.eth.account.from_key(key).address
-    USLOVIE = await balance_token(ADDRESS, '0xe2cec8ab811b648ba7b1691ce08d5e800dd0a60a') == 0 and await balance_token(ADDRESS, '0x79c912FEF520be002c2B6e57EC4324e260f38E50') ==0
-    stat = await i_dont_know_what_to_call_it_plus_rule(key, work_velodrome,USLOVIE, 'VELODROME', '193664347672322048')
+    USLOVIE = await balance_token(ADDRESS, '0xe2cec8ab811b648ba7b1691ce08d5e800dd0a60a') == 0 and await balance_token(ADDRESS, '0x79c912FEF520be002c2B6e57EC4324e260f38E50') == 0
+    stat = await i_dont_know_what_to_call_it_plus_rule(key, work_velodrome, USLOVIE, 'VELODROME', '193664347672322048')
     return stat
 
 
@@ -173,7 +174,8 @@ async def gas_eth(key):
     while True:
         GAS = await web3eth.eth.gas_price
         if GAS > GWEI_MAX * 10 ** 9:
-            logger.info(f'{ADDRESS} | Await normal gas {"{:.2f}".format(GAS / 10 ** 9)}/{GWEI_MAX} GWEI')
+            logger.info(
+                f'{ADDRESS} | Await normal gas {"{:.2f}".format(GAS / 10 ** 9)}/{GWEI_MAX} GWEI')
             await asyncio.sleep(60)
         else:
             return True
@@ -238,7 +240,6 @@ logger.add(f"./log/file_{date}.log")
 gal = Galxe()
 
 
-
 web3 = Web3(Web3.AsyncHTTPProvider(RPC_OPTIMISM),
             modules={'eth': (AsyncEth,)}, middlewares=[])
 
@@ -248,6 +249,7 @@ web3eth = Web3(Web3.AsyncHTTPProvider(RPC_ETH),
 key_path = os.path.abspath('data_file/key.txt')
 with open(key_path, 'r') as f:
     key_list = [k for k in [i.strip() for i in f] if k != '']
+
 
 async def run():
     await asyncio.gather(*[work(k) for k in key_list])
