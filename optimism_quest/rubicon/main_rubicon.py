@@ -5,10 +5,14 @@ import json
 from loguru import logger
 import random
 import time
+from dotenv import load_dotenv
+from os import environ
 
 RPC = 'https://rpc.ankr.com/optimism'
 web3 = Web3(Web3.AsyncHTTPProvider(RPC),
             modules={'eth': (AsyncEth,)}, middlewares=[])
+load_dotenv()
+time_sleep = eval(environ["SLEEP"])
 
 
 async def check_approve(key, spender, CONTRACT_TOKEN):
@@ -149,24 +153,24 @@ async def work_rubicon(key):
         gas = await approve_gas(key, '0xe0e112e8f33d3f437D1F895cbb1A456836125952',
                                 '0x7f5c764cbc14f9669b88837ca1490cca17c31607')
         await verif_tx(gas)
-        await asyncio.sleep(random.randint(10, 15))
+        await asyncio.sleep(random.randint(*time_sleep))
 
     if await balance_token(ADDRESS, '0xe0e112e8f33d3f437d1f895cbb1a456836125952') == 0:
         tx_liq = await deposit(key)
         await verif_tx(tx_liq)
-        await asyncio.sleep(random.randint(10, 15))
+        await asyncio.sleep(random.randint(*time_sleep))
 
     if await balance_token(ADDRESS, '0xe0e112e8f33d3f437d1f895cbb1a456836125952') != 0:
         tx_liq = await withdraw(key)
         await verif_tx(tx_liq)
-        await asyncio.sleep(random.randint(10, 15))
+        await asyncio.sleep(random.randint(*time_sleep))
 
     if await check_approve(key, '0x7Af14ADc8Aea70f063c7eA3B2C1AD0D7A59C4bFf',
                            '0x7f5c764cbc14f9669b88837ca1490cca17c31607'):
         gas = await approve_gas(key, '0x7Af14ADc8Aea70f063c7eA3B2C1AD0D7A59C4bFf',
                                 '0x7f5c764cbc14f9669b88837ca1490cca17c31607')
         await verif_tx(gas)
-        await asyncio.sleep(random.randint(10, 15))
+        await asyncio.sleep(random.randint(*time_sleep))
 
     if await balance_token(ADDRESS, '0x4200000000000000000000000000000000000006') <= 0.1 * 10 ** 18:
         tx = await swap(key)

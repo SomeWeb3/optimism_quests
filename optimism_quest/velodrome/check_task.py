@@ -38,11 +38,11 @@ async def verify_task(ID_TASK, ADDRESS):
                         return True
                     else:
                         logger.info(f'{ADDRESS} | Await verefication')
-                        await asyncio.sleep(100,160)
+                        await asyncio.sleep(100, 160)
         except Exception as e:
             rep += 1
 
-            if rep %5 == 0:
+            if rep % 5 == 0:
                 logger.error(f'GALXY | {ADDRESS} | {e}')
 
             if rep >= 15:

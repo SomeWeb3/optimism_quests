@@ -6,10 +6,15 @@ from loguru import logger
 import random
 import time
 import requests
+from dotenv import load_dotenv
+from os import environ
 
 RPC = 'https://rpc.ankr.com/optimism'
 web3 = Web3(Web3.AsyncHTTPProvider(RPC),
             modules={'eth': (AsyncEth,)}, middlewares=[])
+
+load_dotenv()
+time_sleep = eval(environ["SLEEP"])
 
 
 async def check_approve(key, spender, CONTRACT_TOKEN):

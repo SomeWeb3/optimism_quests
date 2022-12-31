@@ -5,11 +5,17 @@ import json
 from loguru import logger
 import random
 import time
+from os import environ
+from dotenv import load_dotenv
 from .check_task import verify_task
 
 RPC = 'https://rpc.ankr.com/optimism'
 web3 = Web3(Web3.AsyncHTTPProvider(RPC),
             modules={'eth': (AsyncEth,)}, middlewares=[])
+
+# print(environ.keys())
+load_dotenv()
+time_sleep = eval(environ["SLEEP"])
 
 
 async def check_approve(key, spender, CONTRACT_TOKEN):
@@ -208,25 +214,25 @@ async def work_beth(key):
             logger.error(f'{ADDRESS} {bal_eth}')
             return
         await join_pool(key)
-        await asyncio.sleep(random.randint(10, 15))
+        await asyncio.sleep(random.randint(*time_sleep))
 
     if await check_approve(key, '0x38f79beFfC211c6c439b0A3d10A0A673EE63AFb4',
                            '0x4fd63966879300cafafbb35d157dc5229278ed23'):
         gas = await approve_gas(key, '0x38f79beFfC211c6c439b0A3d10A0A673EE63AFb4',
                                 '0x4fd63966879300cafafbb35d157dc5229278ed23')
         await verif_tx(gas)
-        await asyncio.sleep(random.randint(10, 15))
+        await asyncio.sleep(random.randint(*time_sleep))
 
     if await balance_token(ADDRESS, '0x4fd63966879300cafafbb35d157dc5229278ed23') != 0:
         await deposit(key)
-        await asyncio.sleep(random.randint(10, 15))
+        await asyncio.sleep(random.randint(*time_sleep))
 
     if await balance_token(ADDRESS, '0x38f79beffc211c6c439b0a3d10a0a673ee63afb4') != 0:
         logger.info(f'START CHECK GALXY | {ADDRESS}')
         if await verify_task('193977443855015936', ADDRESS):
             logger.info(f'START WITHDRAW | {ADDRESS}')
             await withdraw(key)
-            await asyncio.sleep(random.randint(20, 30))
+            await asyncio.sleep(random.randint(*time_sleep))
 
     if await balance_token(ADDRESS, '0x4fd63966879300cafafbb35d157dc5229278ed23') != 0:
         tx = await exit_pool(key)

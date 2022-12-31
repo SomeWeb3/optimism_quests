@@ -4,12 +4,17 @@ import asyncio
 import json
 from loguru import logger
 import random
+from dotenv import load_dotenv
+from os import environ
 import time
 import requests
 
 RPC = 'https://rpc.ankr.com/optimism'
 web3 = Web3(Web3.AsyncHTTPProvider(RPC),
             modules={'eth': (AsyncEth,)}, middlewares=[])
+
+load_dotenv()
+time_sleep = eval(environ["SLEEP"])
 
 
 async def check_approve(key, spender, CONTRACT_TOKEN):
@@ -213,19 +218,19 @@ async def work_pika(key):
         gas = await approve_gas(key, '0x8adD31BC901214A37f3bb676Cb90AD62B24fd9a5',
                                 '0x7f5c764cbc14f9669b88837ca1490cca17c31607')
         await verif_tx(gas)
-        await asyncio.sleep(random.randint(10, 15))
+        await asyncio.sleep(random.randint(*time_sleep))
 
     if await get_manager(ADDRESS) == False:
         await set_manager(key)
-        await asyncio.sleep(random.randint(10, 15))
+        await asyncio.sleep(random.randint(*time_sleep))
 
     if await get_manager(ADDRESS):
         await open_pos(key)
-        await asyncio.sleep(random.randint(10, 15))
+        await asyncio.sleep(random.randint(*time_sleep))
 
     if await get_manager(ADDRESS):
         await close_pos(key)
-        await asyncio.sleep(random.randint(10, 15))
+        await asyncio.sleep(random.randint(*time_sleep))
 
     if await check_approve(key, '0xD5A8f233CBdDb40368D55C3320644Fb36e597002',
                            '0x7f5c764cbc14f9669b88837ca1490cca17c31607'):
@@ -233,7 +238,7 @@ async def work_pika(key):
         gas = await approve_gas(key, '0xD5A8f233CBdDb40368D55C3320644Fb36e597002',
                                 '0x7f5c764cbc14f9669b88837ca1490cca17c31607')
         await verif_tx(gas)
-        await asyncio.sleep(random.randint(10, 15))
+        await asyncio.sleep(random.randint(*time_sleep))
 
     if await get_stake(ADDRESS) == 0:
         tx = await stake(key)

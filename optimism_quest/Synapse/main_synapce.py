@@ -5,10 +5,14 @@ import json
 from loguru import logger
 import random
 import time
+from dotenv import load_dotenv
+from os import environ
 
 RPC = 'https://rpc.ankr.com/optimism'
 web3 = Web3(Web3.AsyncHTTPProvider(RPC),
             modules={'eth': (AsyncEth,)}, middlewares=[])
+load_dotenv()
+time_sleep = eval(environ["SLEEP"])
 
 
 async def check_approve(key, spender, CONTRACT_TOKEN):
@@ -129,19 +133,19 @@ async def work_synapse(key):
             gas = await approve_gas(key, '0xF44938b0125A6662f9536281aD2CD6c499F22004',
                                     '0x7f5c764cbc14f9669b88837ca1490cca17c31607')
             await verif_tx(gas)
-            await asyncio.sleep(random.randint(10, 15))
+            await asyncio.sleep(random.randint(*time_sleep))
 
         if await balance_token(ADDRESS, '0x2c6d91accc5aa38c84653f28a80aec69325bdd12') == 0:
             tx_liq = await inscreased_liquidity(key)
             await verif_tx(tx_liq)
-            await asyncio.sleep(random.randint(10, 15))
+            await asyncio.sleep(random.randint(*time_sleep))
 
         if await check_approve(key, '0xF44938b0125A6662f9536281aD2CD6c499F22004',
                                '0x2c6d91accc5aa38c84653f28a80aec69325bdd12'):
             gas = await approve_gas(key, '0xF44938b0125A6662f9536281aD2CD6c499F22004',
                                     '0x2c6d91accc5aa38c84653f28a80aec69325bdd12')
             await verif_tx(gas)
-            await asyncio.sleep(random.randint(10, 15))
+            await asyncio.sleep(random.randint(*time_sleep))
 
         if await balance_token(ADDRESS, '0x2c6d91accc5aa38c84653f28a80aec69325bdd12') != 0:
             tx_liq = await removeLiquidityOneToken(key)

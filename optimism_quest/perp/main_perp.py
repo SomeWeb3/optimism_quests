@@ -5,11 +5,16 @@ import json
 from loguru import logger
 import random
 import time
+from dotenv import load_dotenv
+from os import environ
 import requests
 
 RPC = 'https://rpc.ankr.com/optimism'
 web3 = Web3(Web3.AsyncHTTPProvider(RPC),
             modules={'eth': (AsyncEth,)}, middlewares=[])
+
+load_dotenv()
+time_sleep = eval(environ["SLEEP"])
 
 
 async def check_approve(key, spender, CONTRACT_TOKEN):
@@ -303,36 +308,36 @@ async def work_perp(key):
         gas = await approve_gas(key, '0xAD7b4C162707E0B2b5f6fdDbD3f8538A5fbA0d60',
                                 '0x4200000000000000000000000000000000000006')
         await verif_tx(gas)
-        await asyncio.sleep(random.randint(10, 15))
+        await asyncio.sleep(random.randint(*time_sleep))
 
     if await get_balanced_by_token(ADDRESS) == 0:
         await deposit_weth(key)
-        await asyncio.sleep(random.randint(10, 15))
+        await asyncio.sleep(random.randint(*time_sleep))
 
     if await pos_size(ADDRESS) == 0 and await usdc_debt(ADDRESS) >= 0:
         tx = await open_pos(key)
         if await verif_tx(tx):
-            await asyncio.sleep(random.randint(5, 10))
+            await asyncio.sleep(random.randint(*time_sleep))
 
     if await pos_size(ADDRESS) != 0:
         tx2 = await clese_pos(key)
         if await verif_tx(tx2):
-            await asyncio.sleep(random.randint(10, 15))
+            await asyncio.sleep(random.randint(*time_sleep))
 
     if await balance_token(ADDRESS, '0x7F5c764cBc14f9669B88837ca1490cCa17c31607') < -(await usdc_debt(ADDRESS)):
         await uniswap(key)
-        await asyncio.sleep(random.randint(10, 15))
+        await asyncio.sleep(random.randint(*time_sleep))
 
     if await check_approve(key, '0xAD7b4C162707E0B2b5f6fdDbD3f8538A5fbA0d60',
                            '0x7f5c764cbc14f9669b88837ca1490cca17c31607'):
         gas = await approve_gas(key, '0xAD7b4C162707E0B2b5f6fdDbD3f8538A5fbA0d60',
                                 '0x7f5c764cbc14f9669b88837ca1490cca17c31607')
         await verif_tx(gas)
-        await asyncio.sleep(random.randint(10, 15))
+        await asyncio.sleep(random.randint(*time_sleep))
 
     if await usdc_debt(ADDRESS) < 0 and await get_free_col(ADDRESS) == 0:
         await deposit_usdc(key)
-        await asyncio.sleep(random.randint(10, 15))
+        await asyncio.sleep(random.randint(*time_sleep))
 
     if await get_free_col(ADDRESS) >= 0 and await get_balanced_by_token(ADDRESS) > 0:
         tx = await withdraw_all(key)

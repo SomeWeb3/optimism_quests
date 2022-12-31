@@ -5,6 +5,11 @@ import json
 from loguru import logger
 import random
 import time
+from dotenv import load_dotenv
+from os import environ
+
+load_dotenv()
+time_sleep = eval(environ["SLEEP"])
 
 RPC = 'https://rpc.ankr.com/optimism'
 web3 = Web3(Web3.AsyncHTTPProvider(RPC),
@@ -175,22 +180,22 @@ async def work_granary(key):
             gas = await approve_gas(key, '0x8FD4aF47E4E63d1D2D45582c3286b4BD9Bb95DfE',
                                     '0x7f5c764cbc14f9669b88837ca1490cca17c31607')
             await verif_tx(gas)
-            await asyncio.sleep(random.randint(10, 15))
+            await asyncio.sleep(random.randint(*time_sleep))
 
         if await balance_token(ADDRESS, '0x7a0fddba78ff45d353b1630b77f4d175a00df0c0') == 0:
             tx = await deposit(key)
             await verif_tx(tx)
-            await asyncio.sleep(random.randint(10, 15))
+            await asyncio.sleep(random.randint(*time_sleep))
 
         if await balance_token(ADDRESS, '0x7a0fddba78ff45d353b1630b77f4d175a00df0c0') != 0 and await balance_token(ADDRESS, '0xb271973b367E50fcDE5Ee5e426944C37045Dd0bf') == 0:
             tx = await borrow(key)
             await verif_tx(tx)
-            await asyncio.sleep(random.randint(10, 15))
+            await asyncio.sleep(random.randint(*time_sleep))
 
         if await balance_token(ADDRESS, '0xb271973b367e50fcde5ee5e426944c37045dd0bf') != 0 and await balance_token(ADDRESS, '0x7a0fddba78ff45d353b1630b77f4d175a00df0c0') != 0:
             tx = await repay(key)
             await verif_tx(tx)
-            await asyncio.sleep(random.randint(10, 15))
+            await asyncio.sleep(random.randint(*time_sleep))
 
         if await balance_token(ADDRESS, '0xb271973b367e50fcde5ee5e426944c37045dd0bf') == 0 and await balance_token(ADDRESS, '0x7a0fddba78ff45d353b1630b77f4d175a00df0c0') != 0:
             tx = await withdraw(key)
