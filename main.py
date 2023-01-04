@@ -8,6 +8,9 @@ import json
 from web3 import Web3
 from web3.eth import AsyncEth
 import datetime
+from dotenv import load_dotenv
+from os import environ
+from random import randint
 
 from optimism_quest import \
     work_pooltog, \
@@ -183,46 +186,48 @@ async def gas_eth(key):
 
 async def work(key):
     st1, st2, st3, st4, st5, st6, st7, st8, st9, st10 = [False] * 10
+    load_dotenv()
+    quest_sleep = eval(environ["QUEST_SLEEP"])
 
     if await gas_eth(key):
         st1 = await beth(key)
-        await asyncio.sleep(4)
+        await asyncio.sleep(randint(*quest_sleep))
 
     if await gas_eth(key):
         st2 = await perp(key)
-        await asyncio.sleep(4)
+        await asyncio.sleep(randint(*quest_sleep))
 
     if await gas_eth(key):
         st3 = await granary(key)
-        await asyncio.sleep(4)
+        await asyncio.sleep(randint(*quest_sleep))
 
     if await gas_eth(key):
         st4 = await synapse(key)
-        await asyncio.sleep(4)
+        await asyncio.sleep(randint(*quest_sleep))
 
     if await gas_eth(key):
         st5 = await rubicon(key)
-        await asyncio.sleep(4)
+        await asyncio.sleep(randint(*quest_sleep))
 
     if await gas_eth(key):
         st6 = await velodrome(key)
-        await asyncio.sleep(4)
+        await asyncio.sleep(randint(*quest_sleep))
 
     if await gas_eth(key):
         st7 = await uniswap(key)
-        await asyncio.sleep(4)
+        await asyncio.sleep(randint(*quest_sleep))
 
     if await gas_eth(key):
         st8 = await pika(key)
-        await asyncio.sleep(4)
+        await asyncio.sleep(randint(*quest_sleep))
 
     if await gas_eth(key):
         st9 = await together(key)
-        await asyncio.sleep(4)
+        await asyncio.sleep(randint(*quest_sleep))
 
     if await gas_eth(key):
         st10 = await polynomial(key)
-        await asyncio.sleep(4)
+        await asyncio.sleep(randint(*quest_sleep))
 
     stat_quest(key, st1, st2, st3, st4, st5, st6, st7, st8, st9, st10)
 
